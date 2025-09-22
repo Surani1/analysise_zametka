@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Эволюция семейного права России: 1969-1995</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Scholarly Neutral -->
+    <!-- Application Structure Plan: The application uses a "Then vs. Now" comparative structure. A central navigation lets users select key legal topics. This displays the rules from the 1969 Code and the 1995 Code side-by-side. This interactive approach is chosen over a linear report format to facilitate direct comparison and better highlight the specific legal innovations (novellas) of the 1995 code, which is a core requirement of the source material. -->
+    <!-- Visualization & Content Choices: Report Info: Evolution of family law, comparison of 1969 and 1995 codes. Goal: Compare, Inform. Viz/Presentation Method: Interactive two-column text layout. Interaction: User clicks on topic buttons to dynamically update the content in both columns. Justification: Since the source material is entirely textual and conceptual, a dynamic text-based comparison is the most effective way to present the information, allowing users to actively explore the legal changes. Library/Method: Vanilla JavaScript for interaction, Tailwind CSS for layout. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfcf9;
+            color: #333;
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .nav-button.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .nav-button:not(.active):hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+        .content-card {
+            transition: opacity 0.5s ease-in-out;
+            opacity: 1;
+        }
+        .highlight-new {
+            color: #1d4ed8;
+            font-weight: 500;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Семейное право России: Эволюция 1969-1995</h1>
+            <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Интерактивный обзор ключевых изменений в семейном законодательстве — от советского Кодекса о браке и семье до нового Семейного кодекса Российской Федерации.</p>
+        </header>
+
+        <main>
+            <section id="intro" class="mb-12 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">От советской идеологии к новым реалиям</h2>
+                <p class="text-gray-700 leading-relaxed">Период с 1969 по 1995 год стал переломным для семейного права в России. Законодательство прошло путь от строгих идеологических рамок советской эпохи, где семья рассматривалась как ячейка общества, до гибких норм, отвечающих вызовам нового времени. Распад СССР и переход к рыночной экономике потребовали кардинального пересмотра подходов к регулированию брака, собственности супругов и, что самое важное, защите прав ребенка. Это приложение позволяет наглядно сравнить два ключевых документа эпохи и увидеть, как изменились правовые основы российской семьи.</p>
+            </section>
+
+            <section id="comparison" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Сравнительный анализ: Тогда vs Сейчас</h2>
+                <div id="navigation" class="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8">
+                    <button data-topic="marriage" class="nav-button active text-sm sm:text-base px-4 py-2 rounded-full font-medium bg-gray-100 text-gray-700">Брак и развод</button>
+                    <button data-topic="property" class="nav-button text-sm sm:text-base px-4 py-2 rounded-full font-medium bg-gray-100 text-gray-700">Имущество супругов</button>
+                    <button data-topic="children" class="nav-button text-sm sm:text-base px-4 py-2 rounded-full font-medium bg-gray-100 text-gray-700">Права ребенка</button>
+                    <button data-topic="alimony" class="nav-button text-sm sm:text-base px-4 py-2 rounded-full font-medium bg-gray-100 text-gray-700">Алименты</button>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="content-card bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-700 mb-4 text-center">Кодекс о браке и семье РСФСР 1969 г.</h3>
+                        <div id="content-1969"></div>
+                    </div>
+                    <div class="content-card bg-blue-50 p-6 rounded-lg border border-blue-200">
+                        <h3 class="text-xl font-bold text-blue-800 mb-4 text-center">Семейный кодекс РФ 1995 г.</h3>
+                        <div id="content-1995"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="conclusion" class="mt-12 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">Значение и перспективы</h2>
+                <p class="text-gray-700 leading-relaxed">Принятие Семейного кодекса 1995 года стало важнейшим шагом в адаптации правовой системы России к новым социально-экономическим условиям. Он сместил фокус с идеологической роли семьи на защиту прав и интересов каждого ее члена, в первую очередь — ребенка. Такие нововведения, как брачный договор, признание мнения ребенка и развитие альтернативных форм устройства детей-сирот, заложили основу для современного, более гибкого и гуманного семейного права. Этот кодекс и сегодня остается фундаментом, который продолжает развиваться, отвечая на вызовы современного общества.</p>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 text-gray-500 text-sm">
+            <p>&copy; 2025 Интерактивный анализ семейного права. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <script>
+        const contentData = {
+            marriage: {
+                '1969': `
+                    <ul class="space-y-3 list-disc list-inside text-gray-600">
+                        <li><strong>Заключение брака:</strong> Только в органах ЗАГС. Церковный брак не имел юридической силы.</li>
+                        <li><strong>Расторжение брака:</strong> Осуществлялось через суд, часто с выяснением причин развода и попытками примирения сторон. Процедура могла быть длительной.</li>
+                        <li><strong>Идеологическая основа:</strong> Брак рассматривался как основа советской семьи, а развод не поощрялся государством.</li>
+                    </ul>
+                `,
+                '1995': `
+                    <ul class="space-y-3 list-disc list-inside text-blue-700">
+                        <li class="highlight-new"><strong>Упрощение развода:</strong> Введена возможность расторжения брака в органах ЗАГС при взаимном согласии супругов, не имеющих общих несовершеннолетних детей.</li>
+                        <li><strong>Судебный порядок:</strong> Сохранен для случаев споров о детях, разделе имущества или при несогласии одного из супругов.</li>
+                        <li><strong>Либерализация подхода:</strong> Государство перестало вмешиваться в личные причины развода, акцентируя внимание на урегулировании правовых последствий.</li>
+                    </ul>
+                `
+            },
+            property: {
+                '1969': `
+                    <ul class="space-y-3 list-disc list-inside text-gray-600">
+                        <li><strong>Режим собственности:</strong> Только совместная собственность. Все имущество, нажитое в браке, считалось общим, доли супругов признавались равными.</li>
+                        <li><strong>Отсутствие договора:</strong> Супруги не могли изменить установленный законом режим имущества.</li>
+                        <li><strong>Раздел имущества:</strong> Производился судом в равных долях, отступление от равенства допускалось в исключительных случаях (например, в интересах детей).</li>
+                    </ul>
+                `,
+                '1995': `
+                    <ul class="space-y-3 list-disc list-inside text-blue-700">
+                        <li class="highlight-new"><strong>Брачный договор:</strong> Впервые введен институт брачного договора, позволяющий супругам самостоятельно определять свои имущественные права и обязанности.</li>
+                        <li class="highlight-new"><strong>Гибкость режима:</strong> Появилась возможность установить режим долевой или раздельной собственности как на все имущество, так и на его отдельные виды.</li>
+                        <li><strong>Законный режим:</strong> Режим совместной собственности сохранен как режим по умолчанию (если нет брачного договора).</li>
+                    </ul>
+                `
+            },
+            children: {
+                '1969': `
+                    <ul class="space-y-3 list-disc list-inside text-gray-600">
+                        <li><strong>Защита прав:</strong> Государство провозглашало защиту прав несовершеннолетних, но механизмы были ограничены.</li>
+                        <li><strong>Мнение ребенка:</strong> Закон формально не требовал учета мнения ребенка при решении вопросов, затрагивающих его интересы.</li>
+                        <li><strong>Лишение родительских прав:</strong> Рассматривалось как крайняя мера, применялось при уклонении от выполнения родительских обязанностей.</li>
+                    </ul>
+                `,
+                '1995': `
+                    <ul class="space-y-3 list-disc list-inside text-blue-700">
+                        <li class="highlight-new"><strong>Приоритет интересов ребенка:</strong> Закреплен принцип приоритета защиты прав и интересов детей.</li>
+                        <li class="highlight-new"><strong>Право на мнение:</strong> Установлено право ребенка выражать свое мнение при решении в семье любого вопроса, а учет мнения ребенка, достигшего 10 лет, стал обязательным.</li>
+                        <li><strong>Ужесточение оснований лишения прав:</strong> Включены такие основания, как жестокое обращение с детьми.</li>
+                        <li class="highlight-new"><strong>Новые формы устройства:</strong> Помимо усыновления, опеки и попечительства, введена приемная семья.</li>
+                    </ul>
+                `
+            },
+            alimony: {
+                '1969': `
+                    <ul class="space-y-3 list-disc list-inside text-gray-600">
+                        <li><strong>Круг лиц:</strong> В основном, алиментные обязательства касались родителей и детей, а также супругов.</li>
+                        <li><strong>Размер алиментов:</strong> Устанавливался в долях к заработку (1/4 на одного ребенка, 1/3 на двух, 1/2 на трех и более).</li>
+                        <li><strong>Обязанности совершеннолетних детей:</strong> Были предусмотрены, но на практике применялись реже.</li>
+                    </ul>
+                `,
+                '1995': `
+                    <ul class="space-y-3 list-disc list-inside text-blue-700">
+                        <li class="highlight-new"><strong>Расширение круга лиц:</strong> Установлены алиментные обязательства других членов семьи (братьев и сестер, бабушек и дедушек, внуков).</li>
+                        <li><strong>Способы уплаты:</strong> Помимо долевого способа, введена возможность взыскания алиментов в твердой денежной сумме или путем предоставления имущества.</li>
+                        <li class="highlight-new"><strong>Соглашение об уплате:</strong> Появилась возможность заключать нотариально удостоверенное соглашение об уплате алиментов, имеющее силу исполнительного листа.</li>
+                    </ul>
+                `
+            }
+        };
+
+        const navigation = document.getElementById('navigation');
+        const content1969 = document.getElementById('content-1969');
+        const content1995 = document.getElementById('content-1995');
+        const buttons = navigation.querySelectorAll('.nav-button');
+
+        function updateContent(topic) {
+            if (!contentData[topic]) return;
+
+            content1969.innerHTML = '';
+            content1995.innerHTML = '';
+
+            setTimeout(() => {
+                content1969.innerHTML = contentData[topic]['1969'];
+                content1995.innerHTML = contentData[topic]['1995'];
+                content1969.classList.add('fade-in');
+                content1995.classList.add('fade-in');
+            }, 50);
+
+            content1969.classList.remove('fade-in');
+            content1995.classList.remove('fade-in');
+        }
+
+        navigation.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') return;
+
+            const topic = e.target.dataset.topic;
+            if (topic) {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+                updateContent(topic);
+            }
+        });
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateContent('marriage');
+        });
+    </script>
+</body>
+</html>
