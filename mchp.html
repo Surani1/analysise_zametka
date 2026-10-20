@@ -1,1120 +1,245 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#10243a">
-  <meta name="description" content="Учебный алгоритм выбора права, применимого к отношению с иностранным элементом.">
-  <title>МЧП алгоритм выбора применимого права</title>
-
-  <style>
-    :root {
-      --navy: #10243a;
-      --navy-2: #193653;
-      --ink: #1d2938;
-      --muted: #667386;
-      --paper: #f4f6f8;
-      --line: #d7dee7;
-      --blue: #dce8f5;
-      --gold: #c7a66a;
-      --green: #dceee5;
-      --red: #f5e4e1;
-      --white: #ffffff;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font: 16px/1.6 "Segoe UI", Arial, sans-serif;
-    }
-
-    /* Шапка */
-
-    .wrap {
-      width: min(1120px, calc(100% - 36px));
-      margin: 0 auto;
-    }
-
-    .cover {
-      background: linear-gradient(135deg, var(--navy), var(--navy-2));
-      color: var(--white);
-      padding: 42px 0;
-      border-bottom: 5px solid var(--gold);
-    }
-
-    .eyebrow {
-      text-transform: uppercase;
-      letter-spacing: .13em;
-      font-size: 12px;
-      color: #d9c49b;
-      font-weight: 700;
-    }
-
-    h1 {
-      font-size: clamp(29px, 4vw, 45px);
-      line-height: 1.15;
-      margin: 15px 0;
-      letter-spacing: -.025em;
-    }
-
-    .subtitle {
-      color: #dce5ef;
-      max-width: 800px;
-      font-size: 17px;
-      margin: 0;
-    }
-
-    .meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 9px;
-      margin-top: 23px;
-    }
-
-    .chip {
-      border: 1px solid #66809a;
-      border-radius: 999px;
-      padding: 6px 11px;
-      font-size: 12px;
-      color: #eef3f8;
-    }
-
-    /* Основной макет с правой боковой панелью */
-
-    .page-layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 260px;
-      gap: 24px;
-      max-width: 1600px;
-      margin: 0 auto;
-      padding: 28px 24px 50px;
-      align-items: start;
-    }
-
-    .main-content {
-      width: 100%;
-      min-width: 0;
-    }
-
-    main {
-      padding: 0;
-    }
-
-    /* Схема справа на белом фоне */
-
-    .diagram-sidebar {
-      min-width: 0;
-      background: #ffffff;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 3px 12px rgba(16, 36, 58, .04);
-    }
-
-    .diagram-sidebar h2 {
-      color: var(--navy);
-      font-size: 17px;
-      line-height: 1.4;
-      margin: 0 0 14px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--gold);
-    }
-
-    .diagram-image {
-      display: block;
-      width: 100%;
-      height: auto;
-      object-fit: contain;
-      border-radius: 5px;
-      cursor: zoom-in;
-    }
-
-    .diagram-caption {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-      margin: 12px 0 0;
-    }
-
-    /* Вводный блок */
-
-    .intro {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--gold);
-      border-radius: 12px;
-      padding: 20px 22px;
-      margin-bottom: 28px;
-    }
-
-    .intro strong {
-      color: var(--navy);
-    }
-
-    .section-title {
-      margin: 36px 0 15px;
-      color: var(--navy);
-      font-size: 23px;
-      line-height: 1.3;
-    }
-
-    .section-description {
-      color: var(--muted);
-      margin: -5px 0 16px;
-      font-size: 14px;
-    }
-
-    /* Этапы алгоритма */
-
-    .flow {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 13px;
-      align-items: stretch;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: 43px minmax(0, 1fr);
-      gap: 12px;
-      align-items: start;
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: 13px;
-      padding: 16px;
-      box-shadow: 0 3px 12px rgba(16, 36, 58, .035);
-      min-width: 0;
-    }
-
-    .num {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--blue);
-      color: var(--navy);
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 16px;
-    }
-
-    .step h3 {
-      margin: 0 0 8px;
-      font-size: 17px;
-      line-height: 1.4;
-      color: var(--navy);
-    }
-
-    .step p {
-      margin: 7px 0;
-      font-size: 14px;
-    }
-
-    .question {
-      font-weight: 700;
-      color: #263a50;
-    }
-
-    .branches {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 11px;
-    }
-
-    .branch {
-      font-size: 12px;
-      line-height: 1.5;
-      border-radius: 7px;
-      padding: 5px 8px;
-      background: #edf1f5;
-      color: #344255;
-    }
-
-    .branch.yes {
-      background: var(--green);
-      color: #245640;
-    }
-
-    .branch.no {
-      background: var(--red);
-      color: #783c34;
-    }
-
-    .law {
-      color: var(--muted);
-      font-size: 12px !important;
-      margin-top: 10px !important;
-      padding-top: 8px;
-      border-top: 1px solid #edf0f4;
-    }
-
-    /* Промежуточные пояснения */
-
-    .note {
-      border: 1px solid #d6c39e;
-      background: #fbf8f1;
-      border-radius: 10px;
-      padding: 14px 16px;
-      margin: 18px 0;
-      font-size: 14px;
-    }
-
-    .note strong {
-      color: #705526;
-    }
-
-    /* Контрольные вопросы и нормативная база */
-
-    .two-col {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      margin-top: 26px;
-    }
-
-    .panel {
-      background: var(--white);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 20px;
-      min-width: 0;
-    }
-
-    .panel h3 {
-      margin: 0 0 12px;
-      color: var(--navy);
-      font-size: 18px;
-    }
-
-    ul {
-      padding-left: 21px;
-      margin: 8px 0;
-    }
-
-    li {
-      margin: 8px 0;
-      font-size: 14px;
-    }
-
-    /* Итог */
-
-    .final {
-      background: var(--navy);
-      color: var(--white);
-      padding: 25px;
-      border-radius: 14px;
-      margin-top: 28px;
-      border-bottom: 4px solid var(--gold);
-    }
-
-    .final h2 {
-      margin: 0 0 12px;
-      font-size: 23px;
-    }
-
-    .final p {
-      color: #e0e8f0;
-      margin: 9px 0;
-    }
-
-    .final strong {
-      color: #f0d9a8;
-    }
-
-    footer {
-      color: var(--muted);
-      text-align: center;
-      font-size: 12px;
-      padding: 22px 18px;
-      border-top: 1px solid var(--line);
-      background: #ffffff;
-    }
-
-    /* Увеличение схемы по нажатию */
-
-    .image-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      background: rgba(9, 21, 35, .88);
-      padding: 24px;
-      overflow: auto;
-      text-align: center;
-    }
-
-    .image-modal.open {
-      display: block;
-    }
-
-    .image-modal img {
-      display: block;
-      width: auto;
-      max-width: min(100%, 1000px);
-      height: auto;
-      margin: 36px auto 20px;
-      background: #ffffff;
-      border-radius: 5px;
-    }
-
-    .modal-close {
-      position: fixed;
-      top: 12px;
-      right: 22px;
-      border: 1px solid rgba(255,255,255,.5);
-      background: var(--navy);
-      color: #ffffff;
-      border-radius: 8px;
-      padding: 8px 14px;
-      font: inherit;
-      font-size: 15px;
-      cursor: pointer;
-    }
-
-    .modal-hint {
-      color: #ffffff;
-      font-size: 13px;
-    }
-
-    /* Планшеты */
-
-    @media (max-width: 1100px) {
-      .page-layout {
-        grid-template-columns: minmax(0, 1fr) 220px;
-        gap: 16px;
-        padding: 22px 16px 40px;
-      }
-
-      .flow {
-        grid-template-columns: 1fr;
-      }
-
-      .step {
-        padding: 15px;
-      }
-    }
-
-    /* Мобильные устройства */
-
-    @media (max-width: 700px) {
-      .wrap {
-        width: calc(100% - 26px);
-      }
-
-      .cover {
-        padding: 30px 0;
-      }
-
-      h1 {
-        font-size: 30px;
-      }
-
-      .subtitle {
-        font-size: 15px;
-      }
-
-      .page-layout {
-        grid-template-columns: minmax(0, 1fr);
-        padding: 18px 13px 32px;
-        gap: 24px;
-      }
-
-      .main-content {
-        width: 100%;
-      }
-
-      .diagram-sidebar {
-        width: 100%;
-        max-width: 420px;
-        margin: 0 auto;
-      }
-
-      .diagram-image {
-        width: 100%;
-      }
-
-      .section-title {
-        font-size: 21px;
-        margin-top: 30px;
-      }
-
-      .two-col {
-        grid-template-columns: 1fr;
-      }
-
-      .intro,
-      .panel,
-      .final {
-        padding: 16px;
-      }
-
-      .step {
-        grid-template-columns: 36px minmax(0, 1fr);
-        gap: 10px;
-        padding: 13px;
-      }
-
-      .num {
-        width: 34px;
-        height: 34px;
-        font-size: 13px;
-      }
-
-      .step h3 {
-        font-size: 16px;
-      }
-
-      .image-modal {
-        padding: 12px;
-      }
-
-      .image-modal img {
-        margin-top: 55px;
-      }
-    }
-
-    /* Печать */
-
-    @media print {
-      body {
-        background: #ffffff;
-        font-size: 12px;
-      }
-
-      .cover {
-        padding: 24px;
-        print-color-adjust: exact;
-        -webkit-print-color-adjust: exact;
-      }
-
-      .page-layout {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 180px;
-        gap: 14px;
-        padding: 18px 0;
-      }
-
-      .wrap {
-        width: 100%;
-      }
-
-      .diagram-sidebar {
-        box-shadow: none;
-        break-inside: avoid;
-      }
-
-      .diagram-image {
-        cursor: default;
-      }
-
-      .step,
-      .panel,
-      .intro,
-      .final {
-        break-inside: avoid;
-        box-shadow: none;
-      }
-
-      .flow {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .section-title {
-        break-after: avoid;
-      }
-
-      .image-modal {
-        display: none !important;
-      }
-
-      footer {
-        padding: 12px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10243a">
+<meta name="description" content="Учебный алгоритм выбора применимого права в международном частном праве с блок-схемой и нормативными ориентирами.">
+<title>МЧП — алгоритм выбора применимого права</title>
+<style>
+:root{--navy:#10243a;--navy2:#1c4265;--ink:#1d2937;--muted:#5c6b7a;--paper:#f3f6fa;--line:#d7e0e9;--gold:#c7a64b;--pale:#eaf1f8;--white:#fff;--green:#e3f5ec;--red:#fff0ef}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.65 "Segoe UI",Arial,sans-serif}
+a{color:#245c91;text-underline-offset:3px}
+.wrap{width:min(1500px,calc(100% - 40px));margin:auto}
+.cover{background:linear-gradient(125deg,var(--navy),var(--navy2));color:white;padding:44px 0 38px;border-bottom:5px solid var(--gold)}
+.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:750;color:#f3df9c}
+h1{font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-.03em;margin:14px 0}
+.subtitle{max-width:900px;color:#e1e9f1;font-size:18px;margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+.chip{border:1px solid #ffffff45;border-radius:999px;padding:6px 12px;font-size:12px;color:#f8fafc;background:#ffffff0b}
+.page-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(400px,46%);gap:28px;align-items:start;max-width:1600px;margin:0 auto;padding:28px 24px 56px}
+.main-content{min-width:0}
+.intro,.panel,.step,.note{background:white;border:1px solid var(--line);border-radius:14px}
+.intro{padding:22px 24px;margin-bottom:30px;border-left:5px solid var(--gold);box-shadow:0 4px 18px #10243a08}
+.intro strong{color:var(--navy)}
+.section-title{font-size:25px;line-height:1.25;color:var(--navy);margin:36px 0 8px;letter-spacing:-.02em}
+.section-description{color:var(--muted);margin:0 0 18px;font-size:14px}
+.flow{display:grid;gap:12px}
+.step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:18px;box-shadow:0 3px 12px #10243a05;transition:border-color .18s,transform .18s}
+.step:hover{border-color:#c7a64b;transform:translateY(-1px)}
+.num{width:42px;height:42px;border-radius:11px;background:var(--pale);display:grid;place-items:center;color:var(--navy);font-weight:800}
+.step h3{font-size:17px;line-height:1.4;margin:0 0 7px;color:var(--navy)}
+.step p{font-size:14px;margin:7px 0}
+.question{font-weight:700;color:#254866}
+.law{font-size:12px!important;color:var(--muted);padding-top:8px;border-top:1px solid #edf1f5}
+.branches{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}
+.branch{font-size:12px;padding:5px 9px;border-radius:7px;background:#edf2f7;color:#334155}
+.branch.yes{background:var(--green);color:#176445}.branch.no{background:var(--red);color:#8f302c}
+.note{padding:17px 20px;margin:23px 0;background:#fffcf3;border-color:#e6d6aa;font-size:14px}
+.note strong{color:#6b5215}
+.diagram-sidebar{position:sticky;top:14px;align-self:start;background:white;border:2px solid var(--gold);border-radius:16px;padding:18px;box-shadow:0 12px 34px #10243a12;min-width:0}
+.diagram-head{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid var(--gold);padding-bottom:12px;margin-bottom:12px}
+.diagram-head h2{font-size:20px;line-height:1.25;color:var(--navy);margin:0}
+.diagram-head span{font-size:12px;color:var(--muted);white-space:nowrap}
+.diagram-viewport{height:calc(100vh - 145px);min-height:480px;max-height:1000px;overflow:auto;overscroll-behavior:contain;border:1px solid var(--line);border-radius:10px;background:#f8fafc;scrollbar-gutter:stable;cursor:zoom-in}
+.diagram-image{display:block;width:100%;height:auto;object-fit:contain;transform-origin:top center;-webkit-user-drag:none;user-select:none}
+.diagram-caption{font-size:12px;line-height:1.5;color:var(--muted);margin:11px 2px 0}
+.diagram-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.action{border:1px solid #cbd5e1;border-radius:8px;padding:8px 11px;background:white;color:var(--navy);font:inherit;font-size:12px;cursor:pointer}
+.action.primary{background:var(--navy);color:white;border-color:var(--navy)}
+.action:hover{filter:brightness(.96)}
+.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:30px}
+.panel{padding:21px;min-width:0}
+.panel h3{margin:0 0 12px;color:var(--navy);font-size:18px}
+.panel ul{padding-left:19px;margin:0}
+.panel li{font-size:13px;margin:9px 0}
+.final{margin-top:26px;background:var(--navy);color:white;padding:26px;border-radius:15px;border-bottom:5px solid var(--gold)}
+.final h2{margin:0 0 10px;font-size:23px}.final p{color:#d8e2ed;margin:9px 0}.final strong{color:#f3df9c}
+footer{text-align:center;color:var(--muted);background:white;border-top:1px solid var(--line);padding:24px;font-size:12px}
+.modal{display:none;position:fixed;inset:0;z-index:1000;background:#071321ed;padding:20px;overflow:auto}
+.modal.open{display:block}
+.modal-bar{position:sticky;top:0;display:flex;justify-content:flex-end;z-index:2;max-width:1400px;margin:0 auto 12px}
+.modal img{display:block;width:min(100%,1100px);height:auto;margin:0 auto 18px;background:white;border-radius:8px}
+.modal .hint{text-align:center;color:#c4d0dc;font-size:13px}
+body.modal-open{overflow:hidden}
+@media(max-width:1050px){.page-layout{grid-template-columns:minmax(0,1fr) minmax(320px,42%);gap:18px;padding:20px 16px 40px}.diagram-sidebar{padding:12px}.diagram-viewport{height:calc(100vh - 130px);min-height:400px}}
+@media(max-width:760px){
+  html{scroll-padding-top:12px}
+  body{font-size:15px;line-height:1.6}
+  .wrap{width:calc(100% - 28px)}
+  .cover{padding:27px 0 25px;border-bottom-width:4px}
+  .eyebrow{font-size:10px;letter-spacing:.09em;line-height:1.5}
+  h1{font-size:clamp(27px,7.3vw,38px);line-height:1.12;margin:12px 0}
+  .subtitle{font-size:15px;line-height:1.55}
+  .meta{gap:7px;margin-top:17px}
+  .chip{font-size:11px;padding:5px 9px;line-height:1.4}
+  .page-layout{display:flex;flex-direction:column;gap:18px;padding:14px 10px 30px}
+  .main-content{order:2;width:100%}
+  .diagram-sidebar{position:relative;top:auto;order:1;width:100%;padding:12px;border-width:1px;border-radius:13px}
+  .diagram-head{align-items:flex-start;gap:8px;padding-bottom:10px}
+  .diagram-head h2{font-size:17px}
+  .diagram-head span{font-size:10px;white-space:normal;text-align:right}
+  .diagram-viewport{height:58vh;height:58dvh;min-height:300px;max-height:560px;border-radius:8px}
+  .diagram-caption{font-size:11px;margin-top:9px}
+  .diagram-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+  .action{min-height:42px;padding:9px 8px;font-size:12px;white-space:normal}
+  .intro{padding:17px;margin-bottom:22px;border-radius:11px}
+  .section-title{font-size:21px;line-height:1.25;margin:29px 0 8px}
+  .section-description{font-size:13px;line-height:1.5}
+  .flow{gap:10px}
+  .step{padding:13px;grid-template-columns:32px minmax(0,1fr);gap:10px;border-radius:11px}
+  .num{width:31px;height:31px;border-radius:8px;font-size:13px}
+  .step h3{font-size:15px;line-height:1.35}
+  .step p{font-size:13px;line-height:1.55;overflow-wrap:anywhere}
+  .law{font-size:11px!important}
+  .branches{gap:6px}
+  .branch{font-size:11px;padding:5px 7px;overflow-wrap:anywhere}
+  .note{padding:14px 15px;margin:18px 0;font-size:13px}
+  .two-col{grid-template-columns:1fr;gap:12px;margin-top:22px}
+  .panel{padding:17px;border-radius:11px}
+  .panel h3{font-size:17px}
+  .panel li{font-size:12px;overflow-wrap:anywhere}
+  .final{padding:20px;margin-top:20px;border-radius:12px}
+  .final h2{font-size:20px}
+  .final p{font-size:14px}
+  footer{padding:20px 14px;font-size:11px}
+  .modal{padding:10px}
+  .modal-bar{margin-bottom:8px}
+  .modal img{width:100%;border-radius:5px}
+  .modal .hint{font-size:12px;padding:0 5px}
+}
+@media(max-width:380px){
+  .wrap{width:calc(100% - 22px)}
+  .page-layout{padding-left:7px;padding-right:7px}
+  .cover{padding-top:23px}
+  h1{font-size:26px}
+  .diagram-viewport{height:52vh;height:52dvh;min-height:270px}
+  .diagram-actions{grid-template-columns:1fr}
+  .step{padding:11px;grid-template-columns:28px minmax(0,1fr);gap:8px}
+  .num{width:27px;height:27px;font-size:12px}
+  .step h3{font-size:14px}
+}
+@media(min-width:761px) and (max-width:1050px){
+  .page-layout{grid-template-columns:minmax(0,1fr) minmax(290px,40%);gap:15px;padding:18px 12px 34px}
+  .diagram-sidebar{padding:11px}
+  .diagram-viewport{height:calc(100vh - 135px);min-height:360px}
+  .diagram-head h2{font-size:17px}
+}
+@media print{body{background:white}.cover,.final{print-color-adjust:exact;-webkit-print-color-adjust:exact}.page-layout{display:block;padding:0}.diagram-sidebar{position:static;break-before:page;box-shadow:none;margin:20px 0}.diagram-viewport{height:auto;max-height:none;overflow:visible}.diagram-image{width:100%;max-width:100%}.diagram-actions{display:none}.step{break-inside:avoid}.modal{display:none!important}}
+</style>
 </head>
-
 <body>
-
-  <!-- Шапка без фотографии -->
-
-  <header class="cover">
-    <div class="wrap">
-
-      <div class="eyebrow">
-        Международное частное право · учебный алгоритм
-      </div>
-
-      <h1>
-        Выбор права,<br>
-        применимого к отношению<br>
-        с иностранным элементом
-      </h1>
-
-      <p class="subtitle">
-        Пошаговый маршрут правоприменителя: от квалификации
-        правоотношения до разрешения вопроса по существу.
-      </p>
-
-      <div class="meta">
-        <span class="chip">ГК РФ · раздел VI части третьей</span>
-        <span class="chip">Коллизионные нормы</span>
-        <span class="chip">Проверка исключений</span>
-      </div>
-
+<header class="cover">
+  <div class="wrap">
+    <div class="eyebrow">Международное частное право · учебный навигатор</div>
+    <h1>Выбор права, применимого к отношению<br>с иностранным элементом</h1>
+    <p class="subtitle">Последовательный алгоритм: от квалификации правоотношения и поиска коллизионной нормы до установления содержания иностранного права и разрешения спора по существу.</p>
+    <div class="meta">
+      <span class="chip">ГК РФ · раздел VI части третьей</span>
+      <span class="chip">Статьи 1186–1224</span>
+      <span class="chip">Постановление Пленума ВС РФ от 09.07.2019 № 24</span>
     </div>
-  </header>
-
-  <!-- Основной контент слева и схема справа -->
-
-  <div class="page-layout">
-
-    <main class="main-content">
-
-      <section class="intro">
-        <strong>Как читать алгоритм.</strong>
-        Каждый блок представляет отдельный этап правового анализа.
-        Вопросы предполагают развилку: при положительном ответе
-        выполняется указанное действие, при отрицательном —
-        определяется следующий применимый этап. Сначала устанавливается
-        коллизионная норма, затем проверяются пределы применения
-        выбранного права, определяется содержание иностранного права
-        и разрешается отношение по существу.
-      </section>
-
-      <h2 class="section-title">
-        I. Квалификация и поиск коллизионной нормы
-      </h2>
-
-      <p class="section-description">
-        Первоначальная задача — определить характер правоотношения,
-        установить иностранный элемент и найти применимое коллизионное правило.
-      </p>
-
-      <section class="flow">
-
-        <article class="step">
-          <div class="num">01</div>
-          <div>
-            <h3>Определить предмет отношения</h3>
-            <p class="question">
-              Какой именно юридический вопрос требуется разрешить?
-            </p>
-            <p>
-              Установить участников, объект, содержание требования
-              и юридически значимые обстоятельства. Если вопросов
-              несколько, квалифицировать каждый отдельно.
-            </p>
-            <p class="law">
-              Результат: сформулирован предмет правового анализа.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">02</div>
-          <div>
-            <h3>Проверить частноправовой характер</h3>
-            <p class="question">
-              Относится ли отношение к частноправовой сфере?
-            </p>
-            <p>
-              Если да — продолжить алгоритм международного частного права.
-              Если нет — определить применимое публично-правовое регулирование:
-              нормы МЧП не применяются автоматически.
-            </p>
-            <div class="branches">
-              <span class="branch yes">Да → шаг 03</span>
-              <span class="branch no">Нет → отдельный отраслевой анализ</span>
-            </div>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">03</div>
-          <div>
-            <h3>Установить иностранный элемент</h3>
-            <p class="question">
-              Связано ли отношение с иностранным государством?
-            </p>
-            <p>
-              Проверить субъектный состав, местонахождение объекта
-              и место юридического факта, имеющего значение для отношения.
-            </p>
-            <div class="branches">
-              <span class="branch yes">Есть → шаг 04</span>
-              <span class="branch no">Нет → проверить специальные основания</span>
-            </div>
-            <p class="law">Основание: пункт 1 статьи 1186 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">04</div>
-          <div>
-            <h3>Квалифицировать отношение</h3>
-            <p class="question">
-              К какой категории относится вопрос?
-            </p>
-            <p>
-              Например: договор, вещное право, статус физического
-              или юридического лица, наследование, семейное отношение,
-              интеллектуальная собственность или деликт.
-            </p>
-            <p>
-              Если в одном деле есть разные вопросы, для каждого
-              может потребоваться самостоятельная коллизионная норма.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">05</div>
-          <div>
-            <h3>Разрешить проблему квалификации</h3>
-            <p class="question">
-              Есть ли спор о значении юридического понятия?
-            </p>
-            <p>
-              По общему правилу понятия квалифицируются по российскому
-              праву. Если понятие неизвестно российскому праву или
-              имеет иное содержание, проверить условия применения
-              иностранного права для квалификации.
-            </p>
-            <p class="law">Основание: статья 1187 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">06</div>
-          <div>
-            <h3>Проверить международный договор</h3>
-            <p class="question">
-              Есть ли международный договор РФ, применимый к отношению?
-            </p>
-            <p>
-              Проверить предметную, персональную и временную сферы действия,
-              участие России и наличие применимой коллизионной нормы.
-            </p>
-            <div class="branches">
-              <span class="branch yes">
-                Есть норма → проверить условия применения
-              </span>
-              <span class="branch no">
-                Нет нормы → национальное законодательство
-              </span>
-            </div>
-            <p class="law">
-              Основание: статья 1186 ГК РФ; Федеральный закон
-              от 15 июля 1995 г. № 101-ФЗ.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">07</div>
-          <div>
-            <h3>Найти норму российского законодательства</h3>
-            <p class="question">
-              Предусмотрена ли специальная коллизионная норма?
-            </p>
-            <p>
-              Проверить раздел VI части третьей ГК РФ и специальные
-              нормы иных законов. При отсутствии специальной нормы
-              проверить общие коллизионные правила.
-            </p>
-            <p class="law">Ориентир: статьи 1186–1224 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">08</div>
-          <div>
-            <h3>Определить коллизионную привязку</h3>
-            <p class="question">
-              Какой критерий связывает отношение с правом государства?
-            </p>
-            <p>
-              Это может быть гражданство, место жительства,
-              место учреждения юридического лица, местонахождение вещи,
-              место причинения вреда, выбор сторон или наиболее тесная связь.
-            </p>
-            <p>
-              Установить факты, необходимые для применения конкретного критерия.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">09</div>
-          <div>
-            <h3>Проверить автономию воли</h3>
-            <p class="question">
-              Допускается ли выбор права и воспользовались ли им стороны?
-            </p>
-            <p>
-              Если да — проверить соглашение, его действительность и пределы.
-              Если нет — применить объективную коллизионную привязку.
-              Не переносить автономию воли на категории отношений,
-              где она не предусмотрена.
-            </p>
-            <p class="law">
-              Для договоров: статьи 1210–1211 ГК РФ;
-              необходимо учитывать специальные ограничения.
-            </p>
-          </div>
-        </article>
-
-      </section>
-
-      <div class="note">
-        <strong>Промежуточный вывод.</strong>
-        К этому этапу необходимо определить юридическую природу
-        отношения, применимый источник коллизионного регулирования
-        и правило, позволяющее установить право конкретного государства.
-      </div>
-
-      <h2 class="section-title">
-        II. Проверка выбранного права и исключений
-      </h2>
-
-      <p class="section-description">
-        Даже после определения применимого права необходимо проверить
-        специальные правила, способные повлиять на его применение.
-      </p>
-
-      <section class="flow">
-
-        <article class="step">
-          <div class="num">10</div>
-          <div>
-            <h3>Определить право государства</h3>
-            <p class="question">
-              Позволяет ли привязка однозначно определить применимое право?
-            </p>
-            <p>
-              Если да — зафиксировать соответствующее государство.
-              Если нет — проверить альтернативные и субсидиарные привязки,
-              а при наличии оснований — пункт 2 статьи 1186 ГК РФ
-              о наиболее тесной связи.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">11</div>
-          <div>
-            <h3>Проверить обратную отсылку</h3>
-            <p class="question">
-              Отсылает ли иностранное коллизионное право обратно к российскому праву?
-            </p>
-            <p>
-              По общему правилу принимается отсылка к материальному праву.
-              Исключение об обратной отсылке предусмотрено для вопросов
-              правового положения физического лица при условиях закона.
-            </p>
-            <p class="law">Основание: статья 1190 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">12</div>
-          <div>
-            <h3>Проверить нормы непосредственного применения</h3>
-            <p class="question">
-              Есть ли российские нормы, применяемые независимо от выбранного права?
-            </p>
-            <p>
-              Если есть — применить их в пределах действия.
-              Если нет — продолжить анализ. Не всякая императивная
-              норма является нормой непосредственного применения.
-            </p>
-            <p class="law">Основание: статья 1192 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">13</div>
-          <div>
-            <h3>Проверить публичный порядок</h3>
-            <p class="question">
-              Приведёт ли применение иностранной нормы к последствиям,
-              явно противоречащим основам правопорядка РФ?
-            </p>
-            <p>
-              Если да — оценить возможность исключения соответствующей
-              нормы. Простого отличия иностранного права от российского
-              недостаточно.
-            </p>
-            <p class="law">Основание: статья 1193 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">14</div>
-          <div>
-            <h3>Проверить обход закона</h3>
-            <p class="question">
-              Не направлены ли действия участников на обход правил применимого права?
-            </p>
-            <p>
-              Установить юридически значимые обстоятельства и цель действий.
-              Сам по себе выбор иностранного права или совершение сделки
-              за рубежом обхода закона не доказывает.
-            </p>
-            <p class="law">Основание: статья 1194 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">15</div>
-          <div>
-            <h3>Проверить взаимность</h3>
-            <p class="question">
-              Требует ли закон взаимности для применения иностранного права?
-            </p>
-            <p>
-              Общее правило — иностранное право применяется независимо
-              от взаимности, если закон не предусматривает иного.
-              При наличии специального условия проверить его выполнение.
-            </p>
-            <p class="law">Основание: статья 1189 ГК РФ.</p>
-          </div>
-        </article>
-
-      </section>
-
-      <div class="note">
-        <strong>Важно.</strong>
-        Проверка исключений не означает автоматического отказа
-        от иностранного права. Каждое ограничение применяется
-        при наличии предусмотренных законом оснований.
-      </div>
-
-      <h2 class="section-title">
-        III. Установление содержания права и итог
-      </h2>
-
-      <p class="section-description">
-        Заключительный этап — установить содержание иностранного права,
-        применить материальные нормы и сформулировать правовой вывод.
-      </p>
-
-      <section class="flow">
-
-        <article class="step">
-          <div class="num">16</div>
-          <div>
-            <h3>Установить содержание иностранного права</h3>
-            <p class="question">
-              Известны ли содержание и практика применения соответствующих иностранных норм?
-            </p>
-            <p>
-              Учитывать официальное толкование, практику применения
-              и доктрину соответствующего государства. Использовать
-              предусмотренные законом способы установления содержания права.
-            </p>
-            <p class="law">Основание: статья 1191 ГК РФ.</p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">17</div>
-          <div>
-            <h3>Оценить результат установления</h3>
-            <p class="question">
-              Удалось ли установить содержание иностранного права в разумный срок?
-            </p>
-            <p>
-              Если да — применить установленные нормы. Если нет,
-              после принятия необходимых мер использовать российское право
-              только при условиях и в порядке, предусмотренных статьёй 1191 ГК РФ.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">18</div>
-          <div>
-            <h3>Применить материальные нормы</h3>
-            <p class="question">
-              Какие нормы регулируют права и обязанности участников?
-            </p>
-            <p>
-              Применить материальное право определённого государства
-              с учётом выявленных ограничений и специальных правил.
-              При необходимости отдельно определить право для каждого
-              самостоятельного вопроса.
-            </p>
-          </div>
-        </article>
-
-        <article class="step">
-          <div class="num">19</div>
-          <div>
-            <h3>Разрешить отношение по существу</h3>
-            <p class="question">
-              Каковы правовые последствия установленных обстоятельств?
-            </p>
-            <p>
-              Определить права и обязанности сторон, наличие нарушения,
-              последствия и доступные способы защиты.
-              Сформулировать итоговый правовой вывод.
-            </p>
-          </div>
-        </article>
-
-      </section>
-
-      <section class="two-col">
-
-        <div class="panel">
-          <h3>Контрольные вопросы</h3>
-          <ul>
-            <li>Правильно ли квалифицировано отношение?</li>
-            <li>Проверены ли международный договор и специальные нормы?</li>
-            <li>Обоснован ли выбор коллизионной привязки?</li>
-            <li>Проверены ли исключения и пределы применения права?</li>
-            <li>Установлено ли содержание иностранного права надлежащим образом?</li>
-            <li>Обоснован ли итоговый вывод применимыми материальными нормами?</li>
-          </ul>
-        </div>
-
-        <div class="panel">
-          <h3>Нормативная база</h3>
-          <ul>
-            <li>
-              Гражданский кодекс Российской Федерации, часть третья,
-              раздел VI, статьи 1186–1224.
-            </li>
-            <li>
-              Постановление Пленума Верховного Суда РФ от 9 июля 2019 г.
-              № 24 «О применении норм международного частного права
-              судами Российской Федерации».
-            </li>
-            <li>
-              Федеральный закон от 15 июля 1995 г. № 101-ФЗ
-              «О международных договорах Российской Федерации».
-            </li>
-            <li>
-              Специальные международные договоры и отраслевые нормативные
-              акты — при наличии оснований для их применения.
-            </li>
-          </ul>
-        </div>
-
-      </section>
-
-      <section class="final">
-        <h2>Итоговый принцип</h2>
-        <p>
-          Алгоритм выбора применимого права — это не поиск одной статьи,
-          а последовательная проверка юридической квалификации, источников,
-          коллизионной привязки, специальных ограничений и содержания
-          применимого материального права.
-        </p>
-        <p>
-          <strong>Финальный результат:</strong>
-          обоснованно определить право, регулирующее отношение,
-          и разрешить поставленный юридический вопрос по существу.
-        </p>
-      </section>
-
-    </main>
-
-    <!-- Правая боковая панель на белом фоне -->
-
-    <aside class="diagram-sidebar">
-      <h2>Схема алгоритма</h2>
-
-      <img
-        class="diagram-image"
-        src="diagram.png"
-        alt="Полная схема алгоритма выбора применимого права"
-        title="Нажмите, чтобы увеличить схему"
-        onclick="openDiagram()"
-      >
-
-      <p class="diagram-caption">
-        Полная схема алгоритма. Нажмите на изображение,
-        чтобы открыть его в увеличенном размере.
-      </p>
-    </aside>
-
   </div>
+</header>
 
-  <footer>
-    Учебный материал по международному частному праву.
-    Перед использованием в юридическом заключении необходимо
-    сверить действующие редакции нормативных актов и применимость
-    конкретных норм к фактическим обстоятельствам.
-  </footer>
+<div class="page-layout">
+<main class="main-content">
+  <section class="intro"><strong>Как пользоваться алгоритмом.</strong> Сначала определите природу спорного отношения и наличие иностранного элемента. Затем последовательно установите коллизионную норму и применимое право, проверьте специальные ограничения и выясните содержание иностранного права, если оно подлежит применению. Схема справа закреплена в боковой панели; её можно прокручивать отдельно или открыть в крупном размере.</section>
 
-  <!-- Просмотр схемы в увеличенном размере -->
+  <h2 class="section-title">I. Исходная квалификация и поиск нормы</h2>
+  <p class="section-description">Этапы 1–11: установление характера отношения, применимых источников и коллизионной привязки.</p>
+  <section class="flow">
+    <article class="step"><div class="num">01</div><div><h3>Определить характер правоотношения</h3><p>Выделить субъектов, объект, юридические факты и конкретный вопрос, требующий разрешения. При нескольких самостоятельных требованиях квалифицировать каждый вопрос отдельно.</p></div></article>
+    <article class="step"><div class="num">02</div><div><h3>Проверить частноправовой характер</h3><p class="question">Относится ли отношение к сфере частного права?</p><div class="branches"><span class="branch yes">Да → продолжить алгоритм</span><span class="branch no">Нет → определить публично-правовое регулирование</span></div><p>Сам по себе иностранный элемент не превращает публично-правовое отношение в предмет регулирования раздела VI ГК РФ.</p></div></article>
+    <article class="step"><div class="num">03</div><div><h3>Установить наличие иностранного элемента</h3><p class="question">Связано ли отношение с иностранным субъектом, объектом, действием или событием за рубежом?</p><div class="branches"><span class="branch yes">Есть → продолжить</span><span class="branch no">Нет → проверить специальные основания; при их отсутствии применить российское право</span></div><p class="law">Основание: пункт 1 статьи 1186 ГК РФ; пункт 1 Постановления Пленума ВС РФ от 09.07.2019 № 24.</p></div></article>
+    <article class="step"><div class="num">04</div><div><h3>Установить юридически значимые обстоятельства</h3><p>Определить место жительства и гражданство физических лиц, место учреждения и основную деятельность юридических лиц, местонахождение объекта, место исполнения обязательств и место совершения юридически значимых действий.</p></div></article>
+    <article class="step"><div class="num">05</div><div><h3>Квалифицировать отношение и спорный вопрос</h3><p>Определить соответствующую категорию: договор, деликт, вещное право, наследование, семейное отношение, интеллектуальная собственность или иной институт. При необходимости разграничить несколько статутов.</p></div></article>
+    <article class="step"><div class="num">06</div><div><h3>Разрешить проблему квалификации</h3><p class="question">Возникли ли трудности с квалификацией юридических понятий?</p><p>При необходимости применить статью 1187 ГК РФ: исходить из толкования по российскому праву с учётом предусмотренных законом исключений, включая случаи, когда понятие неизвестно российскому праву или имеет иное содержание в иностранном праве.</p><p class="law">Основание: статья 1187 ГК РФ; Постановление Пленума ВС РФ от 09.07.2019 № 24.</p></div></article>
+    <article class="step"><div class="num">07</div><div><h3>Определить применимые источники</h3><p>Проверить международные договоры Российской Федерации, нормы ГК РФ и иных федеральных законов, а также применимые обычаи. Установить сферу действия каждого источника.</p><p class="law">Основание: пункт 1 статьи 1186 и статья 7 ГК РФ.</p></div></article>
+    <article class="step"><div class="num">08</div><div><h3>Проверить наличие применимого международного договора</h3><p class="question">Содержит ли договор норму, относящуюся к спорному отношению?</p><p>Проверить предметную, персональную, территориальную и временную сферу действия договора. Наличие договора само по себе не означает, что он содержит именно коллизионную норму.</p></div></article>
+    <article class="step"><div class="num">09</div><div><h3>Определить, содержит ли договор коллизионную норму</h3><div class="branches"><span class="branch yes">Да → установить договорную коллизионную норму</span><span class="branch no">Нет → проверить российское законодательство</span></div></div></article>
+    <article class="step"><div class="num">10</div><div><h3>Найти коллизионную норму российского законодательства</h3><p>В первую очередь проверить специальные нормы для соответствующего вида отношения. Если определить применимое право на основании применимых источников не удалось, учитывать пункт 2 статьи 1186 ГК РФ о праве страны, с которой отношение наиболее тесно связано.</p><p class="law">Основание: статья 1186 ГК РФ и соответствующие нормы главы 66 и последующих глав раздела VI части третьей ГК РФ.</p></div></article>
+    <article class="step"><div class="num">11</div><div><h3>Установить коллизионную привязку и проверить выбор права</h3><p>Выяснить, допускает ли закон автономию воли сторон и существует ли действительное соглашение о выборе права. Если выбор не допускается или не осуществлён, применить объективную коллизионную привязку.</p><p class="law">Для договорных обязательств: в частности, статьи 1210 и 1211 ГК РФ; конкретная норма зависит от квалификации отношения.</p></div></article>
+  </section>
 
-  <div
-    class="image-modal"
-    id="diagramModal"
-    role="dialog"
-    aria-modal="true"
-    aria-label="Увеличенная схема алгоритма"
-    onclick="closeDiagramOnBackdrop(event)"
-  >
-    <button
-      class="modal-close"
-      type="button"
-      onclick="closeDiagram()"
-      aria-label="Закрыть увеличенную схему"
-    >
-      Закрыть ✕
-    </button>
+  <div class="note"><strong>Промежуточный результат:</strong> определена коллизионная норма и установлено право конкретного государства либо правопорядок, к которому следует обратиться для дальнейшей проверки.</div>
 
-    <img
-      src="diagram.png"
-      alt="Увеличенная схема алгоритма выбора применимого права"
-    >
+  <h2 class="section-title">II. Проверка применимого права и специальных ограничений</h2>
+  <p class="section-description">Этапы 12–18: проверка отсылки, императивных норм, публичного порядка, множественности правовых систем и взаимности.</p>
+  <section class="flow">
+    <article class="step"><div class="num">12</div><div><h3>Определить право конкретного государства</h3><p>Зафиксировать государство, право которого определено коллизионной нормой. При наличии альтернативных или субсидиарных привязок обосновать выбор соответствующего критерия.</p></div></article>
+    <article class="step"><div class="num">13</div><div><h3>Проверить обратную отсылку</h3><p>Установить, отсылают ли коллизионные нормы иностранного права обратно к российскому праву. По общему правилу принимается отсылка к материальному праву, кроме предусмотренных законом случаев.</p><p class="law">Основание: статья 1190 ГК РФ.</p></div></article>
+    <article class="step"><div class="num">14</div><div><h3>Проверить нормы непосредственного применения</h3><p>Установить, имеются ли нормы, которые регулируют соответствующее отношение независимо от права, подлежащего применению по коллизионным нормам.</p><p class="law">Основание: статья 1192 ГК РФ.</p></div></article>
+    <article class="step"><div class="num">15</div><div><h3>Проверить оговорку о публичном порядке</h3><p>Оценить, привело бы применение конкретной иностранной нормы к последствиям, явно противоречащим основам правопорядка Российской Федерации. Само отличие иностранного регулирования от российского недостаточно.</p><p class="law">Основание: статья 1193 ГК РФ; Постановление Пленума ВС РФ от 09.07.2019 № 24.</p></div></article>
+    <article class="step"><div class="num">16</div><div><h3>Проверить статью 1188 ГК РФ: множественность правовых систем</h3><p class="question">В стране, право которой подлежит применению, действует несколько правовых систем?</p><div class="branches"><span class="branch yes">Да → выяснить, позволяет ли право этой страны определить применимую систему</span><span class="branch no">Нет → перейти к проверке взаимности</span></div><p>Если применимую систему можно определить по праву соответствующей страны, применяется она. Если определить её невозможно, применяется правовая система, с которой отношение наиболее тесно связано.</p><p class="law">Основание: статья 1188 ГК РФ.</p></div></article>
+    <article class="step"><div class="num">17</div><div><h3>Проверить взаимность</h3><p>По общему правилу применение иностранного права в Российской Федерации не зависит от взаимности, если иное не предусмотрено федеральным законом.</p><p class="law">Основание: статья 1189 ГК РФ.</p></div></article>
+    <article class="step"><div class="num">18</div><div><h3>Проверить реторсии при наличии оснований</h3><p>Статья 1194 ГК РФ регулирует ответные ограничения (реторсии), а не обход закона. Проверить наличие соответствующего ограничения следует только при наличии правового основания и относящихся к делу обстоятельств.</p><p class="law">Основание: статья 1194 ГК РФ.</p></div></article>
+  </section>
 
-    <p class="modal-hint">
-      Для возврата к документу нажмите «Закрыть» или клавишу Escape.
-    </p>
+  <div class="note"><strong>Важно для квалификации:</strong> статья 1194 ГК РФ посвящена реторсиям. Её нельзя указывать как норму об обходе закона. Проверка множественности правовых систем проводится по статье 1188 ГК РФ в соответствии с ветвлением, отражённым на схеме.</div>
+
+  <h2 class="section-title">III. Установление содержания права и разрешение спора</h2>
+  <p class="section-description">Этапы 19–21: установление содержания иностранного права, применение материальных норм и формулирование правового результата.</p>
+  <section class="flow">
+    <article class="step"><div class="num">19</div><div><h3>Установить, подлежит ли применению иностранное право</h3><p>Если применимо российское право, использовать соответствующие российские материальные нормы. Если применимо иностранное право, перейти к установлению его содержания.</p></div></article>
+    <article class="step"><div class="num">20</div><div><h3>Установить содержание норм иностранного права</h3><p>Учитывать официальное толкование, практику применения и доктрину соответствующего иностранного государства. При необходимости суд содействует сторонам и обращается к компетентным органам, организациям или экспертам в порядке, предусмотренном законом.</p><p class="law">Основание: статья 1191 ГК РФ; процессуальные нормы о содействии в установлении содержания иностранного права.</p></div></article>
+    <article class="step"><div class="num">21</div><div><h3>Применить материальные нормы и разрешить отношение по существу</h3><p>Если содержание иностранного права установлено — применить его материальные нормы. Если установить содержание в разумный срок не удалось, применить российское право только при соблюдении условий статьи 1191 ГК РФ. Затем определить права, обязанности и правовые последствия.</p></div></article>
+  </section>
+
+  <section class="two-col">
+    <div class="panel"><h3>Контрольный список</h3><ul>
+      <li>Каждый самостоятельный вопрос спора квалифицирован.</li>
+      <li>Иностранный элемент и применимые источники установлены.</li>
+      <li>Сфера действия международного договора проверена.</li>
+      <li>Коллизионная привязка и выбор права обоснованы.</li>
+      <li>Проверены статьи 1190, 1192 и 1193 ГК РФ.</li>
+      <li>При множественности систем применена статья 1188 ГК РФ.</li>
+      <li>Содержание иностранного права установлено по статье 1191 ГК РФ либо обоснован переход к российскому праву.</li>
+    </ul></div>
+    <div class="panel"><h3>Нормативные ориентиры</h3><ul>
+      <li><a href="https://www.consultant.ru/document/cons_doc_LAW_34154/" target="_blank" rel="noopener">Гражданский кодекс РФ, часть третья</a>, раздел VI «Международное частное право».</li>
+      <li><a href="https://vsrf.ru/documents/own/28079/" target="_blank" rel="noopener">Постановление Пленума Верховного Суда РФ от 9 июля 2019 г. № 24</a> «О применении норм международного частного права судами Российской Федерации».</li>
+      <li>Международные договоры РФ и специальные федеральные законы — в зависимости от предмета и обстоятельств конкретного отношения.</li>
+    </ul></div>
+  </section>
+
+  <section class="final"><h2>Методологический итог</h2><p>Выбор применимого права — это не поиск одной статьи, а последовательное определение правопорядка, проверка границ его применения и установление содержания подлежащих применению норм.</p><p><strong>Финальный результат:</strong> юридически обоснованное определение прав и обязанностей участников и разрешение отношения по существу.</p></section>
+</main>
+
+<aside class="diagram-sidebar" aria-label="Блок-схема алгоритма">
+  <div class="diagram-head"><h2>Блок-схема алгоритма</h2><span>1834 × 9062 px</span></div>
+  <div class="diagram-viewport" id="diagramViewport" title="Прокручивайте схему внутри этой области или откройте крупный просмотр">
+    <img class="diagram-image" id="diagramImage" src="diagram.png" alt="Блок-схема алгоритма выбора применимого права в международном частном праве" width="1834" height="9062">
   </div>
+  <p class="diagram-caption">Панель закреплена при прокрутке страницы. Из-за большой высоты изображения схему можно прокручивать внутри рамки; для чтения мелких блоков откройте полноразмерный просмотр.</p>
+  <div class="diagram-actions"><button class="action primary" type="button" id="openDiagram">Открыть крупно</button><button class="action" type="button" id="resetDiagram">В начало схемы</button></div>
+</aside>
+</div>
 
-  <script>
-    function openDiagram() {
-      const modal = document.getElementById("diagramModal");
-      modal.classList.add("open");
-      document.body.style.overflow = "hidden";
-    }
+<footer>Учебный материал по международному частному праву. Перед использованием в заключениях и процессуальных документах проверяйте действующую редакцию законодательства, применимость международного договора и актуальную судебную практику.</footer>
 
-    function closeDiagram() {
-      const modal = document.getElementById("diagramModal");
-      modal.classList.remove("open");
-      document.body.style.overflow = "";
-    }
-
-    function closeDiagramOnBackdrop(event) {
-      if (event.target.id === "diagramModal") {
-        closeDiagram();
-      }
-    }
-
-    document.addEventListener("keydown", function(event) {
-      if (event.key === "Escape") {
-        closeDiagram();
-      }
-    });
-  </script>
-
+<div class="modal" id="diagramModal" role="dialog" aria-modal="true" aria-label="Полноразмерная блок-схема">
+  <div class="modal-bar"><button class="action primary" type="button" id="closeDiagram">Закрыть просмотр ✕</button></div>
+  <img src="diagram.png" alt="Полноразмерная блок-схема выбора применимого права">
+  <p class="hint">Прокручивайте страницу для просмотра всей схемы. Нажмите «Закрыть просмотр» или клавишу Esc для возврата.</p>
+</div>
+<script>
+(() => {
+  const modal = document.getElementById('diagramModal');
+  const open = document.getElementById('openDiagram');
+  const close = document.getElementById('closeDiagram');
+  const reset = document.getElementById('resetDiagram');
+  const viewport = document.getElementById('diagramViewport');
+  function openModal(){ modal.classList.add('open'); document.body.classList.add('modal-open'); close.focus(); }
+  function closeModal(){ modal.classList.remove('open'); document.body.classList.remove('modal-open'); open.focus(); }
+  open.addEventListener('click', openModal);
+  close.addEventListener('click', closeModal);
+  reset.addEventListener('click', () => { viewport.scrollTo({top:0,behavior:'smooth'}); });
+  modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+})();
+</script>
 </body>
 </html>
